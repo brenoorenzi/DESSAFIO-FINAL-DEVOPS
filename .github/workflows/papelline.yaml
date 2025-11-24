@@ -1,0 +1,28 @@
+name: CI/CD Pipeline - Desafio Final
+on:
+  push:
+    branches:
+      - main
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build API
+        run: docker-compose up --build -d
+
+      - name: Run tests
+        run: docker-compose run api python -m unittest discover
+      
+      - name: Down docker-compose
+        run: docker-compose down
+
+      - name: Deploy
+        uses: render-actions/deploy@v1
+        with:
+          service-id: srv-d4ideiur433s73dinhug
+          api-key: ${{ secrets.papelline }}
+          clear-cache: false
